@@ -191,7 +191,7 @@ Similarly, for the Profession and Degree variables, grouping them into distinct 
 ---
 
 #### 9. Correlation
-![image](https://github.com/user-attachments/assets/951ced48-8e9b-48f5-ad88-dbb9f86f3bf6)
+![image](https://github.com/user-attachments/assets/951ced48-8e9b-48f5-ad88-dbb9f86f3bf6)  
 There is an inconsistency in Correlation Result and Statistical Test. The correlation result may be misleading due to noise, as the dataset includes individuals without Work Pressure (Work Pressure values = -1).  
 This leads to an incorrect conclusion: Higher Work Pressure leads to Lower depression risk, while statistical tests indicate the opposite relationship.
 
@@ -210,7 +210,7 @@ Removing it simplifies the model without losing predictive power.
 
 ---
 
-## Step 3: Build model and tune hyperparaneter
+## Step 3: Build model and tune hyperparameters
 3 models were chosen to predict the target variable ('Depression'): XGBoost, Light GBM, Random Forest due to their strong performance in handling complex datasets and imbalanced classes.
 
 Two evaluation metrics — Recall and Accuracy — were selected to assess the model's performance. These metrics provide complementary perspectives on the model's effectiveness.
