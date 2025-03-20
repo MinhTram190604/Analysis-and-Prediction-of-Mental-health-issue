@@ -11,10 +11,10 @@
 - Machine learning techniques (XGBoost, Light GBM, Random Forest, hyperparameter tuning).
 
 ## Step 1: Preprocessing
-Transform 'Sleep Duration'.
-Drop 'Name', 'id', 'City', 'Degree', 'Profession', 'Profession'.
-Encoding 'Working Professional or Student', 'Gender', 'Dietary Habits', 'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness'
-Handling missing values in 'Financial Stress', 'Dietary Habits', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction', 'Job Satisfaction', 'Sleep Duration'
+Transform 'Sleep Duration', 'Sleep Duration' column.
+Drop 'Name', 'id', 'City', 'Degree', 'Profession' column.
+Encoding 'Working Professional or Student', 'Gender', 'Dietary Habits', 'Have you ever had suicidal thoughts ?', 'Family History of Mental Illness' column.
+Handling missing values in 'Financial Stress', 'Dietary Habits', 'Academic Pressure', 'Work Pressure', 'CGPA', 'Study Satisfaction', 'Job Satisfaction', 'Sleep Duration' column.
 Drop outliers.
 Oversampling target variable by Synthetic Minority Over-Sampling technique.
 
@@ -122,6 +122,8 @@ Oversampling target variable by Synthetic Minority Over-Sampling technique.
 ---
 
 ### Multivariate analysis
+Since some variables will be adjusted during preprocessing (e.g., filling null values with -1, mode, or median), the author chooses to conduct univariate analysis before preprocessing. 
+
 #### 1. Gender & Depression
 Use chi-square statistics to examine the impact of gender on the risk of depression.
 **Insight**: Women have a slightly higher risk of depression than men.
@@ -140,20 +142,81 @@ Use Spearman correlation coefficient to examine the impact of age on the risk of
 ---
 
 #### 3. Working Professional or Student & Depression
-
+There is an imbalance between two groups.
 ![image](https://github.com/user-attachments/assets/76afbdbc-ad2f-49ab-9a23-3f1e48664e9a)
-
-
 
 ---
 
 #### 4. Other numerical variables (Academic Pressure, Work Pressure, CGPA, Study Satisfaction, Job Satisfaction, Work/Study Hours, Financial Stress, Sleep Duration) & Depression
 Use Spearman correlation coefficient to examine the impact of these factors on the risk of depression.  
-**Insight**: The higher academic pressure, the greater risk of depression.
+**Insights**: 
+- The higher job satisfaction, the lower risk of depression.
+- There is no significant relationship between sleep duration and depression.
+- Other variables: the higher level, the greater risk of depression.
+💭 **Author's Hypothesis:**     
+- Individuals with well performance may be excessively concerned about their academic success, which in turn drives them to achieve high grades and be satisfied with their results. Constant pressure to maintain top grades can result in mental and emotional exhaustion.  
+- Long hours of work or study can lead to chronic stress, exhaustion, and burnout, increasing vulnerability to depression.
+- Individuals who dedicate excessive time to work or study often sacrifice personal time, hobbies, and social interactions, leading to loneliness and decreased well-being.
 
 ---
 
-#### 4. Other variables or Student & Depression
-Use Spearman correlation coefficient to examine the impact of work pressure on the risk of depression.  
-**Insight**: The higher work pressure, the greater risk of depression.
+#### 5. Dietary Habits & Depression  
+![image](https://github.com/user-attachments/assets/cab7dee3-f760-4e12-ae3e-f094be4e2344)
 
+💡 **Key Insights**: 
+- Unhealthy Diet: Shows a relatively higher proportion of individuals with depression.
+- Healthy & Moderate Diet: Appears to have a lower proportion of depression cases.
+
+---
+
+#### 6. Suicidal Thoughts & Depression
+![image](https://github.com/user-attachments/assets/630e41fa-2a3d-4352-9188-7b7df3b100e2)
+
+**Insight:**   
+Not all people who have ever had suicidal thoughts are depressed but the data shows a clear association between suicidal thoughts and depression status. Individuals who have experienced suicidal thoughts are much more likely to have depression compared to those who have not. This suggests a strong relationship between suicidal ideation and depression, reinforcing the importance of mental health support for those expressing such thoughts.
+
+---
+
+#### 7. Family History of Mental Illness & Depression
+Use chi-square statistics to examine the impact of family history on the risk of depression.
+**Insight:** Inviduals that have family history of mental health problem have higher risk of depression.
+
+---
+        
+#### 8. Other variables (City, Degree, Profession) & Depression
+Since the City variable contains a large number of unique values, meaningful insights cannot be derived from visualizations unless it is categorized into relevant groups based on specific characteristics or criteria (e.g., Tier 1/2/3 cities, capital cities, economic hubs, tourist destinations, etc.).
+
+Similarly, for the Profession and Degree variables, grouping them into distinct categories based on key industry sectors would enhance interpretability and analysis.
+
+---
+
+#### 9. Correlation
+![image](https://github.com/user-attachments/assets/951ced48-8e9b-48f5-ad88-dbb9f86f3bf6)
+There is an inconsistency in Correlation Result and Statistical Test. The correlation result may be misleading due to noise, as the dataset includes individuals without Work Pressure (Work Pressure values = -1).  
+This leads to an incorrect conclusion: Higher Work Pressure leads to Lower depression risk, while statistical tests indicate the opposite relationship.
+
+**Insights:** There is positive correlation between CGPA, Academic Pressure, and Study Satisfaction.
+- Students who prioritize academic performance tend to achieve higher GPAs.
+- They also report greater satisfaction with their studies.  
+This aligns with the idea that high-achieving students often set clear academic goals, leading to both higher performance and a sense of fulfillment in their education.
+
+📌 Decision to Drop Certain Variables as inputs for predictive model:  
+1. Working Professional or Student:  
+This variable strongly correlates with Age, CGPA, Academic Pressure, Work Pressure, Job Satisfation, Study Satisfation. 
+Besides, it can be inferred from those variables, the author thinks it should be removed.  
+2. Sleep Duration:  
+Statistical analysis shows no significant impact on the target variable (Depression).
+Removing it simplifies the model without losing predictive power.
+
+---
+
+## Step 3: Build model and tune hyperparaneter
+3 models were chosen to predict the target variable ('Depression'): XGBoost, Light GBM, Random Forest due to their strong performance in handling complex datasets and imbalanced classes.
+
+Two evaluation metrics — Recall and Accuracy — were selected to assess the model's performance. These metrics provide complementary perspectives on the model's effectiveness.
+- Accuracy is the Kaggle's evaluation criteria.
+- Recall is the author's choice.
+In an imbalanced dataset, where the majority of individuals do not have depression, a model that predicts "no depression" most of the time can still achieve high accuracy but fail to detect those actually at risk. This means a high-accuracy model may not be effective in identifying at-risk individuals, as it overlooks true positive cases (false negatives).    
+By prioritizing both accuracy and recall, the author aims to build a model that is not only **competitive in Kaggle's ranking system** but also **practically useful for real-world mental health screening.**  
+
+**Result:** The best model is 
